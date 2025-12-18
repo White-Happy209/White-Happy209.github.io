@@ -1,1 +1,34 @@
-src="https://www.youtube.com/embed/rYymKe82y0c?autoplay=1&mute=1&start=64&end=76&loop=1&playlist=rYymKe82y0c&controls=0"
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>延遲播放 YouTube</title>
+</head>
+<body style="margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #000;">
+  <!-- 此處無任何畫面，等待 JavaScript 插入影片 -->
+  <div id="video-container" style="display: none;"></div>
+
+  <script>
+    // 函數：延遲 2 秒插入嵌入影片
+    setTimeout(() => {
+      const videoContainer = document.getElementById("video-container");
+
+      // 插入嵌入影片的 iframe
+      videoContainer.innerHTML = `
+        <iframe 
+          width="560" 
+          height="315" 
+          src="https://www.youtube.com/embed/rYymKe82y0c?autoplay=1&start=64&end=76" 
+          frameborder="0" 
+          allow="autoplay; encrypted-media" 
+          allowfullscreen>
+        </iframe>
+      `;
+
+      // 顯示影片播放器
+      videoContainer.style.display = "block";
+    }, 2000); // 延遲 2 秒（2000 毫秒）
+  </script>
+</body>
+</html>
