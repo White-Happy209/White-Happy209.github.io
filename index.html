@@ -1,45 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>延遲播放 YouTube</title>
-</head>
-<body style="margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #000;">
-  <div id="video-container" style="display: none;"></div>
-  <button id="play-button" style="padding: 10px 20px; font-size: 18px;">播放影片</button>
+<html>
+  <head>
+    <title>YouTube 片段播放</title>
+  </head>
+  <body>
+    <div id="player"></div>
+    <script>
+      // 載入 IFrame API
+      var tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-  <script>
-    document.getElementById("play-button").addEventListener("click", () => {
-      const videoContainer = document.getElementById("video-container");
-      const playButton = document.getElementById("play-button");
-
-      // 插入嵌入影片的 iframe
-      videoContainer.innerHTML = `
-        <iframe 
-          width="560" 
-          height="315" 
-          src="https://www.youtube.com/embed/rYymKe82y0c?autoplay=1&start=64&end=76" 
-          frameborder="0" 
-          allow="autoplay; encrypted-media" 
-          allowfullscreen>
-        </iframe>
-      `;
-
-      // 顯示影片播放器並隱藏按鈕
-      videoContainer.style.display = "block";
-      playButton.style.display = "none";
-
-      // 自動切換為全螢幕模式
-      const iframe = videoContainer.querySelector('iframe');
-      const requestFullscreen = iframe.requestFullscreen || iframe.mozRequestFullScreen || iframe.webkitRequestFullscreen || iframe.msRequestFullscreen;
-
-      if (requestFullscreen) {
-        requestFullscreen.call(iframe);
-      } else {
-        console.warn('Fullscreen API is not supported on this browser.');
+      var player;
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+          height: '390',
+          width: '640',
+          videoId: 'rYymKe82y0c',
+          playerVars: {
+            start: 64,
+            end: 66,
+          },
+          events: { 'onReady': onPlayerReady }
+        });
       }
-    });
-  </script>
-</body>
+
+      function onPlayerReady(event) {
+        event.target.playVideo();
+      }
+    </script>
+  </body>
 </html>
