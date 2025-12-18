@@ -13,17 +13,17 @@
       firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
       var player;
-      var videoQueue = [ // 定義視頻隊列及播放片段的起止時間
-        { videoId: "rYymKe82y0c", start: 64, end: 66 }, // 第一段視頻
-        { videoId: "QA5zuzc1WYA", start: 49, end: 52 }  // 第二段視頻
+      var videoQueue = [ 
+        { videoId: "rYymKe82y0c", start: 64, end: 66 }, // 第一段視頻：1:04-1:06
+        { videoId: "QA5zuzc1WYA", start: 49, end: 52 }  // 第二段視頻：0:49-0:52
       ];
-      var currentVideoIndex = 0; // 當前撥放的視頻指數
+      var currentVideoIndex = 0; // 當前播放的視頻索引
 
       function onYouTubeIframeAPIReady() {
         player = new YT.Player('player', {
           height: '390',
           width: '640',
-          videoId: videoQueue[currentVideoIndex].videoId, // 初始載入第一個視頻
+          videoId: videoQueue[currentVideoIndex].videoId, // 初始載入第一段視頻
           playerVars: {
             start: videoQueue[currentVideoIndex].start,
             end: videoQueue[currentVideoIndex].end
@@ -36,19 +36,21 @@
       }
 
       function onPlayerReady(event) {
-        event.target.playVideo(); // 播放當前視頻
+        event.target.playVideo(); // 自動播放當前段視頻
       }
 
       function onPlayerStateChange(event) {
-        if (event.data === YT.PlayerState.ENDED) { // 當前片段結束
+        if (event.data === YT.PlayerState.ENDED) { // 當前片段播放結束
           currentVideoIndex++;
           if (currentVideoIndex < videoQueue.length) {
-            // 如果還有後續的視頻，載入下一個
+            // 如果還有後續視頻，載入下一段並開始播放
             player.loadVideoById({
               videoId: videoQueue[currentVideoIndex].videoId,
               startSeconds: videoQueue[currentVideoIndex].start,
               endSeconds: videoQueue[currentVideoIndex].end
             });
+          } else {
+            console.log("所有视频播放完成");
           }
         }
       }
