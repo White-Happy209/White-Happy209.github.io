@@ -6,13 +6,13 @@
   <title>延遲播放 YouTube</title>
 </head>
 <body style="margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #000;">
-  <!-- 此處無任何畫面，等待 JavaScript 插入影片 -->
   <div id="video-container" style="display: none;"></div>
+  <button id="play-button" style="padding: 10px 20px; font-size: 18px;">播放影片</button>
 
   <script>
-    // 函數：延遲 2 秒插入嵌入影片
-    setTimeout(() => {
+    document.getElementById("play-button").addEventListener("click", () => {
       const videoContainer = document.getElementById("video-container");
+      const playButton = document.getElementById("play-button");
 
       // 插入嵌入影片的 iframe
       videoContainer.innerHTML = `
@@ -26,8 +26,9 @@
         </iframe>
       `;
 
-      // 顯示影片播放器
+      // 顯示影片播放器並隱藏按鈕
       videoContainer.style.display = "block";
+      playButton.style.display = "none";
 
       // 自動切換為全螢幕模式
       const iframe = videoContainer.querySelector('iframe');
@@ -38,7 +39,7 @@
       } else {
         console.warn('Fullscreen API is not supported on this browser.');
       }
-    }, 2000); // 延遲 2 秒（2000 毫秒）
+    });
   </script>
 </body>
 </html>
