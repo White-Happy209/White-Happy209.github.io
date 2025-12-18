@@ -28,6 +28,16 @@
 
       // 顯示影片播放器
       videoContainer.style.display = "block";
+
+      // 自動切換為全螢幕模式
+      const iframe = videoContainer.querySelector('iframe');
+      const requestFullscreen = iframe.requestFullscreen || iframe.mozRequestFullScreen || iframe.webkitRequestFullscreen || iframe.msRequestFullscreen;
+
+      if (requestFullscreen) {
+        requestFullscreen.call(iframe);
+      } else {
+        console.warn('Fullscreen API is not supported on this browser.');
+      }
     }, 2000); // 延遲 2 秒（2000 毫秒）
   </script>
 </body>
