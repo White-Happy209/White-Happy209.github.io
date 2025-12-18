@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>YouTube 片段播放</title>
+    <title>播放 YouTube 特定片段</title>
   </head>
   <body>
     <div id="player"></div>
@@ -13,21 +13,44 @@
       firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
       var player;
+      var videoQueue = [ // 定義視頻隊列及播放片段的起止時間
+        { videoId: "rYymKe82y0c", start: 64, end: 66 }, // 第一段視頻
+        { videoId: "QA5zuzc1WYA", start: 49, end: 52 }  // 第二段視頻
+      ];
+      var currentVideoIndex = 0; // 當前撥放的視頻指數
+
       function onYouTubeIframeAPIReady() {
         player = new YT.Player('player', {
           height: '390',
           width: '640',
-          videoId: 'rYymKe82y0c',
+          videoId: videoQueue[currentVideoIndex].videoId, // 初始載入第一個視頻
           playerVars: {
-            start: 64,
-            end: 66,
+            start: videoQueue[currentVideoIndex].start,
+            end: videoQueue[currentVideoIndex].end
           },
-          events: { 'onReady': onPlayerReady }
+          events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+          }
         });
       }
 
       function onPlayerReady(event) {
-        event.target.playVideo();
+        event.target.playVideo(); // 播放當前視頻
+      }
+
+      function onPlayerStateChange(event) {
+        if (event.data === YT.PlayerState.ENDED) { // 當前片段結束
+          currentVideoIndex++;
+          if (currentVideoIndex < videoQueue.length) {
+            // 如果還有後續的視頻，載入下一個
+            player.loadVideoById({
+              videoId: videoQueue[currentVideoIndex].videoId,
+              startSeconds: videoQueue[currentVideoIndex].start,
+              endSeconds: videoQueue[currentVideoIndex].end
+            });
+          }
+        }
       }
     </script>
   </body>
