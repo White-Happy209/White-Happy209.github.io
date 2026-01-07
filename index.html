@@ -1,39 +1,296 @@
-// 1. 大大擴展語句庫
-const headers = ['喔呀？', '小XX醬，', '早安午安晚安呀✨', '叔叔我啊，', '看你沒回訊息捏，'];
-const weather = ['今天天氣好熱唷💦', '外面在下雨捏☔️', '變冷了要多穿點喔！', '陽光真燦爛呢☀️'];
-const concerns = [
-  '是在忙嗎？別太累喔',
-  '有沒有乖乖吃飯呀？',
-  '剛好看到這個，就想到你了',
-  '剛下班嗎？辛苦了唷',
-  '正在想你在幹嘛呢捏'
-];
-const endings = ['加油喔！', '期待你的回覆捏😘', '叔叔永遠支持你唷', '（笑）', '打擾到你了嗎？💦'];
-
-generateBtn.addEventListener('click', () => {
-    const text = inputText.value.trim();
-    if (!text) return alert('不輸入文字叔叔會心碎的💔');
-
-    // 2. 隨機組合出「像 AI 寫的」句子
-    const h = headers[Math.floor(Math.random() * headers.length)];
-    const w = weather[Math.floor(Math.random() * weather.length)];
-    const c = concerns[Math.floor(Math.random() * concerns.length)];
-    const e = endings[Math.floor(Math.random() * endings.length)];
-
-    // 組合：開場 + 天氣/關心 + 你的話 + 結尾
-    let baseSentence = `${h}${w}${c}\n關於「${text}」這件事，${e}`;
-
-    // 3. 加上表情符號跟語助詞（大叔構文精髓）
-    const tone = toneSelect.value;
-    let repeatCount = tone === 'gentle' ? 2 : (tone === 'typical' ? 5 : 12);
-    
-    let result = baseSentence;
-    for (let i = 0; i < repeatCount; i++) {
-        result += particles[Math.floor(Math.random() * particles.length)];
-        result += emojis[Math.floor(Math.random() * emojis.length)];
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>✨ 視覺進化｜大叔構文生成器</title>
+  <style>
+    :root {
+      --primary-pink: #ff85a1;
+      --soft-bg: linear-gradient(135deg, #fce4ec 0%, #f3e5f5 100%);
+      --glass: rgba(255, 255, 255, 0.85);
     }
 
-    resultArea.textContent = result;
-    copyBtn.disabled = false;
-    // ... 歷史紀錄邏輯不變 ...
-});
+    body {
+      font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
+      background: var(--soft-bg);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      background: var(--glass);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 2.5rem;
+      border-radius: 30px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+      max-width: 600px;
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    h1 {
+      color: #ff4081;
+      text-align: center;
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+      letter-spacing: 2px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #888;
+      margin-bottom: 30px;
+      font-size: 0.9rem;
+    }
+
+    /* 輸入區進化 */
+    .input-group {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 18px;
+      border: 2px solid transparent;
+      border-radius: 20px;
+      box-sizing: border-box;
+      font-size: 1rem;
+      background: white;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+      resize: none;
+    }
+
+    textarea:focus {
+      border-color: var(--primary-pink);
+      outline: none;
+      box-shadow: 0 0 15px rgba(255, 133, 161, 0.2);
+    }
+
+    /* 控制列進化 */
+    .controls {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+
+    select {
+      flex: 1;
+      padding: 12px;
+      border-radius: 15px;
+      border: 1px solid #ddd;
+      background: white;
+      cursor: pointer;
+    }
+
+    button {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    #genBtn {
+      background: linear-gradient(45deg, #ff4081, #ff85a1);
+      color: white;
+      flex: 1;
+      box-shadow: 0 4px 15px rgba(255, 64, 129, 0.3);
+    }
+
+    #genBtn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 64, 129, 0.4);
+    }
+
+    #copyBtn {
+      background: #eee;
+      color: #666;
+    }
+
+    #copyBtn:not(:disabled):hover {
+      background: #e0e0e0;
+    }
+
+    /* 聊天視窗進化 */
+    .chat-display {
+      background: #fff;
+      padding: 25px;
+      border-radius: 25px;
+      display: flex;
+      gap: 15px;
+      border: 1px solid #fce4ec;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .avatar-area {
+      flex-shrink: 0;
+      text-align: center;
+    }
+
+    .avatar {
+      width: 65px;
+      height: 65px;
+      border-radius: 50%;
+      border: 3px solid #ff80ab;
+      object-fit: cover;
+    }
+
+    .status-dot {
+      width: 12px;
+      height: 12px;
+      background: #4caf50;
+      border: 2px solid white;
+      border-radius: 50%;
+      display: inline-block;
+      margin-left: -15px;
+      position: relative;
+    }
+
+    .bubble {
+      background: #f0f2f5;
+      padding: 15px 20px;
+      border-radius: 4px 20px 20px 20px;
+      position: relative;
+      flex-grow: 1;
+    }
+
+    #result {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-all;
+      font-size: 1.1rem;
+      color: #2c3e50;
+      line-height: 1.6;
+    }
+
+    .history-tag {
+      margin-top: 30px;
+      font-size: 0.85rem;
+      color: #aaa;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 5px;
+      margin-bottom: 10px;
+    }
+
+    #historyList {
+      list-style: none;
+      padding: 0;
+    }
+
+    .history-item {
+      font-size: 0.8rem;
+      color: #999;
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.5);
+      border-radius: 10px;
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>👴 大叔構文 PLUS</h1>
+    <p class="subtitle">讓智慧型大叔幫你重新詮釋每一句話捏 (^_−)☆</p>
+
+    <div class="input-group">
+      <textarea id="inputText" rows="3" placeholder="輸入想轉換的話... (例如：晚上要不要去夜唱？)"></textarea>
+    </div>
+
+    <div class="controls">
+      <select id="tone">
+        <option value="gentle">輕度：親切的鄰家大叔</option>
+        <option value="typical" selected>典型：熱情過頭的大叔</option>
+        <option value="extreme">極端：讓人想報警的大叔</option>
+      </select>
+      <button id="genBtn">開始轉換</button>
+      <button id="copyBtn" disabled>複製</button>
+    </div>
+
+    <div class="chat-display">
+      <div class="avatar-area">
+        <img class="avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Lucky&top=shortHair&hairColor=4a312c&facialHair=moustacheMagnum" alt="Uncle">
+        <span class="status-dot"></span>
+      </div>
+      <div class="bubble">
+        <pre id="result">在等你的訊息喔...💦</pre>
+      </div>
+    </div>
+
+    <div class="history-tag">History Log</div>
+    <ul id="historyList"></ul>
+  </div>
+
+  <script>
+    const config = {
+      headers: ['呀哈！', '小XX，', '唷唷唷！', '喔呀？', '晚安呀捏✨'],
+      weather: ['今天太陽好熱捏☀️', '外面好像涼涼的喔', '要注意保暖喔捏', '天空好藍，就像你一樣（笑）'],
+      aiLogic: [
+        '剛才看到你提到「USER_TEXT」，叔叔心頭一震捏！',
+        '關於「USER_TEXT」這件事，叔叔我也很有興趣唷！',
+        '「USER_TEXT」嗎？嘿嘿，真拿你沒辦法捏（汗）',
+        '聽到你說「USER_TEXT」，叔叔感覺年輕了十歲喔！'
+      ],
+      endings: ['快回我訊息唷😘', '加油加油捏！', '叔叔會一直在這等你喔', '打擾到你了嗎？(^_−)☆'],
+      particles: ['捏', '唷', '呀', '呢', '喔', '（笑）', ' (^_−)☆', '（汗）', '😅', '@@', '（激動）'],
+      emojis: ['😘', '😜', '💦', '❗', '⁉️', '☀️', '🏃', '😋', '💬', '✨', '🙏', '💔', '👉👈', '💕']
+    };
+
+    const genBtn = document.getElementById('genBtn');
+    const resultArea = document.getElementById('result');
+
+    genBtn.addEventListener('click', () => {
+      const input = document.getElementById('inputText').value.trim();
+      if(!input) return alert('不輸入文字，叔叔沒辦法發揮捏！💔');
+
+      // 智慧組句邏輯
+      const h = config.headers[Math.floor(Math.random() * config.headers.length)];
+      const w = config.weather[Math.floor(Math.random() * config.weather.length)];
+      const logic = config.aiLogic[Math.floor(Math.random() * config.aiLogic.length)].replace('USER_TEXT', input);
+      const e = config.endings[Math.floor(Math.random() * config.endings.length)];
+
+      let content = `${h}${w}\n${logic}${e}`;
+      
+      // 表符密度控制
+      const tone = document.getElementById('tone').value;
+      const count = tone === 'gentle' ? 4 : (tone === 'typical' ? 10 : 25);
+      
+      for(let i=0; i<count; i++) {
+        content += config.particles[Math.floor(Math.random() * config.particles.length)];
+        content += config.emojis[Math.floor(Math.random() * config.emojis.length)];
+      }
+
+      resultArea.textContent = content;
+      document.getElementById('copyBtn').disabled = false;
+
+      // 紀錄邏輯
+      const li = document.createElement('li');
+      li.className = 'history-item';
+      li.textContent = content.substring(0, 30) + '...';
+      const history = document.getElementById('historyList');
+      if(history.children.length >= 3) history.removeChild(history.lastChild);
+      history.prepend(li);
+    });
+
+    document.getElementById('copyBtn').addEventListener('click', () => {
+      navigator.clipboard.writeText(resultArea.textContent).then(() => alert('複製好囉！😘'));
+    });
+  </script>
+</body>
+</html>
