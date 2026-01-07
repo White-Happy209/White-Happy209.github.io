@@ -1,60 +1,108 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const inputText = document.getElementById('inputText');
-    const toneSelect = document.getElementById('tone');
-    const generateBtn = document.getElementById('generateBtn');
-    const copyBtn = document.getElementById('copyBtn');
-    const resultArea = document.getElementById('result');
-    const historyList = document.getElementById('history');
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>一句話→大叔構文 生成器</title>
+  <style>
+    /* 這裡幫你寫好了簡單好看的 CSS */
+    body { font-family: sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; padding: 20px; }
+    .container { background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 500px; width: 100%; }
+    h1 { color: #333; font-size: 1.5rem; text-align: center; }
+    textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; margin-bottom: 1rem; }
+    .controls { display: flex; gap: 10px; align-items: center; margin-bottom: 1rem; }
+    select { padding: 8px; border-radius: 5px; }
+    button { padding: 8px 15px; cursor: pointer; border: none; border-radius: 5px; background-color: #007bff; color: white; transition: 0.3s; }
+    button:hover { background-color: #0056b3; }
+    button:disabled { background-color: #ccc; cursor: not-allowed; }
+    .result-area, .history-area { margin-top: 1.5rem; border-top: 1px solid #eee; padding-top: 1rem; }
+    #result { background: #fff9e6; padding: 15px; border-radius: 8px; min-height: 50px; white-space: pre-wrap; word-break: break-all; border-left: 5px solid #ffc107; }
+    ul { list-style: none; padding: 0; font-size: 0.9rem; color: #666; }
+    li { padding: 5px 0; border-bottom: 1px dashed #eee; }
+    .footer { margin-top: 2rem; font-size: 0.7rem; color: #999; text-align: center; }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1>一句話 → 大叔構文 生成器</h1>
+    <p class="description">輸入一句話，選擇語氣，按「生成」試試看！</p>
 
-    // 大叔構文必備元素
-    const emojis = ['😘', '😜', '💦', '❗', '⁉️', '☀', '🏃', '😋', '💬', '✨'];
-    const particles = ['捏', '唷', '呀', '呢', '喔', '（笑）', ' (^_−)☆', '（汗）'];
-    const greetings = ['XX醬，晚安呀', '喔呀？', '叔叔我啊...', '今天也是充滿活力呢', '在幹嘛呢？'];
+    <label for="inputText">輸入一句話</label>
+    <textarea id="inputText" rows="3" placeholder="例如：明天要吃什麼？"></textarea>
 
-    // 生成邏輯
-    generateBtn.addEventListener('click', () => {
+    <div class="controls">
+      <label for="tone">語氣</label>
+      <select id="tone">
+        <option value="gentle">溫和（輕度大叔風）</option>
+        <option value="typical" selected>典型（常見大叔風）</option>
+        <option value="extreme">極端（誇張大叔風）</option>
+      </select>
+      <button id="generateBtn">生成</button>
+      <button id="copyBtn" disabled>複製</button>
+    </div>
+
+    <section class="result-area">
+      <h2>結果</h2>
+      <pre id="result"></pre>
+    </section>
+
+    <section class="history-area">
+      <h2>最近紀錄</h2>
+      <ul id="history"></ul>
+    </section>
+
+    <footer class="footer">
+      <small>提示：請避免用於騷擾或侵犯隱私。</small>
+    </footer>
+  </main>
+
+  <script>
+    // 這裡就是控制網頁運作的 JavaScript
+    document.addEventListener('DOMContentLoaded', () => {
+      const inputText = document.getElementById('inputText');
+      const toneSelect = document.getElementById('tone');
+      const generateBtn = document.getElementById('generateBtn');
+      const copyBtn = document.getElementById('copyBtn');
+      const resultArea = document.getElementById('result');
+      const historyList = document.getElementById('history');
+
+      const emojis = ['😘', '😜', '💦', '❗', '⁉️', '☀️', '🏃', '😋', '💬', '✨', '🙏', '💔'];
+      const particles = ['捏', '唷', '呀', '呢', '喔', '（笑）', ' (^_−)☆', '（汗）', '😅', '@@'];
+      const greetings = ['XX醬，晚安呀', '喔呀？', '叔叔我啊...', '今天也是充滿活力呢', '小XX，在幹嘛呢？'];
+
+      generateBtn.addEventListener('click', () => {
         const text = inputText.value.trim();
         if (!text) {
-            alert('請輸入一些文字喔！(^_−)☆');
-            return;
+          alert('要輸入文字叔叔才能幫你轉呀！(^_−)☆');
+          return;
         }
 
-        let result = "";
         const tone = toneSelect.value;
-
-        // 根據語氣決定誇張程度
-        let repeatCount = tone === 'gentle' ? 1 : (tone === 'typical' ? 3 : 6);
-
-        // 組合文字
-        result = `${greetings[Math.floor(Math.random() * greetings.length)]} ${text}`;
+        let repeatCount = tone === 'gentle' ? 2 : (tone === 'typical' ? 5 : 10);
+        
+        let result = `${greetings[Math.floor(Math.random() * greetings.length)]}\n${text}`;
         
         for (let i = 0; i < repeatCount; i++) {
-            result += particles[Math.floor(Math.random() * particles.length)];
-            result += emojis[Math.floor(Math.random() * emojis.length)];
+          result += particles[Math.floor(Math.random() * particles.length)];
+          result += emojis[Math.floor(Math.random() * emojis.length)];
         }
 
-        // 顯示結果
         resultArea.textContent = result;
         copyBtn.disabled = false;
 
         // 加到歷史紀錄
-        addToHistory(result);
-    });
-
-    // 複製功能
-    copyBtn.addEventListener('click', () => {
-        navigator.clipboard.writeText(resultArea.textContent).then(() => {
-            alert('複製成功了唷！😘');
-        });
-    });
-
-    function addToHistory(content) {
         const li = document.createElement('li');
-        li.textContent = content;
-        // 只保留最近 10 筆
-        if (historyList.children.length >= 10) {
-            historyList.removeChild(historyList.lastChild);
-        }
+        li.textContent = result.substring(0, 30) + '...';
+        if (historyList.children.length >= 10) historyList.removeChild(historyList.lastChild);
         historyList.prepend(li);
-    }
-});
+      });
+
+      copyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(resultArea.textContent).then(() => {
+          alert('複製成功了唷！😘');
+        });
+      });
+    });
+  </script>
+</body>
+</html>
