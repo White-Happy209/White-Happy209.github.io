@@ -1,46 +1,60 @@
-<!doctype html>
-<html lang="zh-Hant">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>一句話→大叔構文 生成器</title>
-  <link rel="stylesheet" href="./styles.css" />
-</head>
-<body>
-  <main class="container">
-    <h1>一句話 → 大叔構文 生成器</h1>
-    <p class="description">輸入一句話，選擇語氣，按「生成」就會輸出大叔構文版本（純前端範例）。</p>
+document.addEventListener('DOMContentLoaded', () => {
+    const inputText = document.getElementById('inputText');
+    const toneSelect = document.getElementById('tone');
+    const generateBtn = document.getElementById('generateBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const resultArea = document.getElementById('result');
+    const historyList = document.getElementById('history');
 
-    <label for="inputText">輸入一句話</label>
-    <textarea id="inputText" rows="3" placeholder="輸入你想轉換的句子..."></textarea>
+    // 大叔構文必備元素
+    const emojis = ['😘', '😜', '💦', '❗', '⁉️', '☀', '🏃', '😋', '💬', '✨'];
+    const particles = ['捏', '唷', '呀', '呢', '喔', '（笑）', ' (^_−)☆', '（汗）'];
+    const greetings = ['XX醬，晚安呀', '喔呀？', '叔叔我啊...', '今天也是充滿活力呢', '在幹嘛呢？'];
 
-    <div class="controls">
-      <label for="tone">語氣</label>
-      <select id="tone">
-        <option value="gentle">溫和（輕度大叔風）</option>
-        <option value="typical" selected>典型（常見大叔風）</option>
-        <option value="extreme">極端（誇張大叔風）</option>
-      </select>
+    // 生成邏輯
+    generateBtn.addEventListener('click', () => {
+        const text = inputText.value.trim();
+        if (!text) {
+            alert('請輸入一些文字喔！(^_−)☆');
+            return;
+        }
 
-      <button id="generateBtn">生成</button>
-      <button id="copyBtn" disabled>複製結果</button>
-    </div>
+        let result = "";
+        const tone = toneSelect.value;
 
-    <section class="result-area">
-      <h2>結果</h2>
-      <pre id="result" aria-live="polite"></pre>
-    </section>
+        // 根據語氣決定誇張程度
+        let repeatCount = tone === 'gentle' ? 1 : (tone === 'typical' ? 3 : 6);
 
-    <section class="history-area">
-      <h2>歷史（最近 10 筆）</h2>
-      <ul id="history"></ul>
-    </section>
+        // 組合文字
+        result = `${greetings[Math.floor(Math.random() * greetings.length)]} ${text}`;
+        
+        for (let i = 0; i < repeatCount; i++) {
+            result += particles[Math.floor(Math.random() * particles.length)];
+            result += emojis[Math.floor(Math.random() * emojis.length)];
+        }
 
-    <footer class="footer">
-      <small>提示：若要更真實自然，可將此作為模板並用大型語言模型做微調；請避免用於騷擾或侵犯隱私。</small>
-    </footer>
-  </main>
+        // 顯示結果
+        resultArea.textContent = result;
+        copyBtn.disabled = false;
 
-  <script src="./script.js" defer></script>
-</body>
-</html>
+        // 加到歷史紀錄
+        addToHistory(result);
+    });
+
+    // 複製功能
+    copyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(resultArea.textContent).then(() => {
+            alert('複製成功了唷！😘');
+        });
+    });
+
+    function addToHistory(content) {
+        const li = document.createElement('li');
+        li.textContent = content;
+        // 只保留最近 10 筆
+        if (historyList.children.length >= 10) {
+            historyList.removeChild(historyList.lastChild);
+        }
+        historyList.prepend(li);
+    }
+});
