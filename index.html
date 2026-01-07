@@ -3,85 +3,90 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>✨ 視覺進化｜大叔構文生成器</title>
+  <title>👴 大叔構文生成器 Plus</title>
   <style>
-    /* 這裡負責美化介面 */
-    :root { --primary-pink: #ff85a1; --soft-bg: linear-gradient(135deg, #fce4ec 0%, #f3e5f5 100%); }
-    body { font-family: "Microsoft JhengHei", sans-serif; background: var(--soft-bg); min-height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; padding: 20px; }
-    .container { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); padding: 2.5rem; border-radius: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); max-width: 600px; width: 100%; }
-    h1 { color: #ff4081; text-align: center; }
-    .subtitle { text-align: center; color: #888; font-size: 0.9rem; margin-bottom: 30px; }
-    textarea { width: 100%; padding: 15px; border: 2px solid #f8bbd0; border-radius: 15px; box-sizing: border-box; margin-bottom: 20px; font-size: 1rem; }
-    .controls { display: flex; gap: 10px; margin-bottom: 25px; }
-    button { padding: 12px 25px; border: none; border-radius: 15px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-    #genBtn { background: linear-gradient(45deg, #ff4081, #ff85a1); color: white; flex: 1; }
-    .chat-display { background: white; padding: 20px; border-radius: 25px; display: flex; gap: 15px; border: 1px solid #fce4ec; }
-    .avatar { width: 65px; height: 65px; border-radius: 50%; border: 3px solid #ff80ab; }
-    .bubble { background: #f0f2f5; padding: 15px; border-radius: 0 20px 20px 20px; flex-grow: 1; }
-    #result { margin: 0; white-space: pre-wrap; font-size: 1.1rem; }
+    /* CSS: 負責視覺進化 */
+    :root { --p-pink: #ff85a1; --bg: linear-gradient(135deg, #fce4ec 0%, #f3e5f5 100%); }
+    body { font-family: "Microsoft JhengHei", sans-serif; background: var(--bg); min-height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; padding: 20px; }
+    .container { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); padding: 2rem; border-radius: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); max-width: 500px; width: 100%; }
+    h1 { color: #ff4081; text-align: center; margin-top: 0; }
+    textarea { width: 100%; padding: 15px; border: 2px solid #f8bbd0; border-radius: 15px; box-sizing: border-box; margin-bottom: 15px; font-size: 1rem; outline: none; }
+    .controls { display: flex; gap: 10px; margin-bottom: 20px; }
+    select { padding: 10px; border-radius: 10px; border: 1px solid #ddd; flex: 1; }
+    button { padding: 10px 20px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+    #genBtn { background: #ff4081; color: white; flex: 1; }
+    .chat-box { background: white; padding: 20px; border-radius: 20px; display: flex; gap: 15px; border: 1px solid #fce4ec; align-items: flex-start; }
+    .avatar { width: 60px; height: 60px; border-radius: 50%; border: 3px solid #ff80ab; background: #eee; }
+    .bubble { background: #f0f2f5; padding: 15px; border-radius: 0 15px 15px 15px; flex: 1; position: relative; }
+    #result { margin: 0; white-space: pre-wrap; word-break: break-all; font-size: 1rem; color: #333; }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <h1>👴 大叔構文 PLUS</h1>
-    <p class="subtitle">讓智慧型大叔幫你重新詮釋每一句話捏 (^_−)☆</p>
-
-    <textarea id="inputText" rows="3" placeholder="隨便寫點什麼..."></textarea>
+  <main class="container">
+    <h1>👴 大叔構文 Plus</h1>
+    <textarea id="inputText" rows="3" placeholder="隨便跟叔叔說點話捏..."></textarea>
 
     <div class="controls">
-      <select id="tone" style="padding:10px; border-radius:10px; flex:1;">
+      <select id="tone">
         <option value="gentle">輕度：親切的鄰家大叔</option>
-        <option value="typical" selected>典型：熱情過頭的大叔</option>
-        <option value="extreme">極端：讓人想報警的大叔</option>
+        <option value="typical" selected>標準：熱情的大叔</option>
+        <option value="extreme">極端：有點怕怕的叔叔</option>
       </select>
-      <button id="genBtn">開始轉換</button>
+      <button id="genBtn">生成文字</button>
       <button id="copyBtn" disabled style="background:#eee;">複製</button>
     </div>
 
-    <div class="chat-display">
-      <img class="avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Lucky&top=shortHair&facialHair=moustacheMagnum" alt="Uncle">
+    <section class="chat-box">
+      <img class="avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&top=shortHair&facialHair=moustacheMagnum" alt="Uncle">
       <div class="bubble">
         <pre id="result">叔叔在等你的訊息喔...💦</pre>
       </div>
-    </div>
-  </div>
+    </section>
+  </main>
 
   <script>
-    /* 這裡負責邏輯生成  */
-    const headers = ['喔呀？小XX，', '早安呀捏！', '叔叔我啊，', '嘿嘿，今天也很有活力呢！'];
+    // JS: 負責智慧生成邏輯
+    const headers = ['喔呀？小XX醬，', '早安呀捏！', '叔叔我啊，', '嘿嘿，今天也很有活力呢！'];
     const weather = ['今天天氣很不錯捏☀️', '外面好像要下雨了捏☔️', '變冷了要注意身體唷！'];
-    const aiBridges = ['關於「USER_TEXT」這件事，叔叔是這樣想的唷...', '看到你說到「USER_TEXT」，叔叔心跳了一下捏'];
+    const aiBridges = ['關於「USER_TEXT」這件事，叔叔是這樣想的唷...', '剛才聽到你說「USER_TEXT」，叔叔心跳了一下捏（笑）'];
     const endings = ['期待你的回覆捏😘', '加油喔，叔叔永遠支持你！'];
     const particles = ['捏', '唷', '呀', '呢', '喔', '（笑）', ' (^_−)☆'];
-    const emojis = ['😘', '😜', '💦', '❗', '⁉️', '☀️', '😋', '✨', '🙏'];
+    const emojis = ['😘', '😜', '💦', '❗', '⁉️', '✨', '🙏', '💔', '💕'];
 
-    document.getElementById('genBtn').addEventListener('click', () => {
+    const genBtn = document.getElementById('genBtn');
+    const resultArea = document.getElementById('result');
+    const copyBtn = document.getElementById('copyBtn');
+
+    genBtn.addEventListener('click', () => {
       const input = document.getElementById('inputText').value.trim();
-      if(!input) return alert('不寫點東西給叔叔嗎？💔');
+      if (!input) return alert('不寫點東西給叔叔嗎？💔');
 
-      // 智慧拼接邏輯 [cite: 2]
       const h = headers[Math.floor(Math.random() * headers.length)];
       const w = weather[Math.floor(Math.random() * weather.length)];
       const bridge = aiBridges[Math.floor(Math.random() * aiBridges.length)].replace('USER_TEXT', input);
       const e = endings[Math.floor(Math.random() * endings.length)];
 
-      let content = `${h}${w}\n${bridge}${e}`;
+      let content = `${h}${w}\n\n${bridge}${e}`;
       
       const tone = document.getElementById('tone').value;
       const count = tone === 'gentle' ? 3 : (tone === 'typical' ? 8 : 15);
       
-      for(let i=0; i<count; i++) {
+      for (let i = 0; i < count; i++) {
         content += particles[Math.floor(Math.random() * particles.length)];
         content += emojis[Math.floor(Math.random() * emojis.length)];
       }
 
-      document.getElementById('result').textContent = content;
-      document.getElementById('copyBtn').disabled = false;
+      resultArea.textContent = content;
+      copyBtn.disabled = false;
+      copyBtn.style.background = '#008CBA';
+      copyBtn.style.color = 'white';
     });
 
-    document.getElementById('copyBtn').addEventListener('click', () => {
-      navigator.clipboard.writeText(document.getElementById('result').textContent).then(() => alert('複製成功！😘'));
+    copyBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(resultArea.textContent).then(() => {
+        alert('複製成功了唷！😘');
+      });
     });
   </script>
 </body>
