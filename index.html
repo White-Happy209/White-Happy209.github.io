@@ -1,1 +1,42 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>點擊產生分身示範</title>
+  <style>
+    /* 全畫面置中容器 */
+    .stage {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f4f4f4;
+      overflow: hidden;
+    }
+
+    /* 主圖 */
+    #main {
+      width: 220px;
+      height: auto;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 120ms;
+      z-index: 10;
+    }
+    #main:active { transform: scale(0.98); }
+
+    /* 分身樣式（絕對定位）*/
+    .clone {
+      position: absolute;
+      width: 180px;
+      height: auto;
+      pointer-events: none; /* 分身不會再接收點擊 */
+      transform-origin: center;
+      animation: pop 300ms ease-out;
+      opacity: 0;
+      z-index: 5;
+    }
 
