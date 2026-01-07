@@ -2,68 +2,45 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>檢查圖片載入示範</title>
-  <style>
-    .stage {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #f4f4f4;
-    }
-    #main {
-      width: 220px;
-      height: auto;
-      cursor: pointer;
-      user-select: none;
-    }
-    .msg {
-      position: absolute;
-      bottom: 12px;
-      left: 12px;
-      background: rgba(255,255,255,0.9);
-      padding: 8px 10px;
-      border-radius: 6px;
-      font-size: 13px;
-      color: #333;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    }
-    .error {
-      color: #b00;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>一句話→大叔構文 生成器</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="stage" id="stage">
-    <!--
-      改成你放在同一資料夾的圖片檔名 (例如 dog.png 或 dog.jpg)。
-      若你想直接嵌入 data URL，請回覆「是」，我會提供把你上傳圖片轉成 data URL 的版本。
-    -->
-    <img id="main" src="dog.png" alt="分身狗" />
-    <div class="msg" id="msg">若看不到圖片，請查看瀏覽器 Console 與 Network（或把圖片檔放在和此 index.html 相同的資料夾）。</div>
-  </div>
+  <main class="container">
+    <h1>一句話 → 大叔構文 生成器</h1>
+    <p class="description">輸入一句話，選擇語氣，按「生成」就會輸出大叔構文版本（純前端範例）。</p>
 
-  <script>
-    const img = document.getElementById('main');
-    const msg = document.getElementById('msg');
+    <label for="inputText">輸入一句話</label>
+    <textarea id="inputText" rows="3" placeholder="輸入你想轉換的句子..."></textarea>
 
-    // 載入失敗時顯示錯誤提示並在 console 印詳細資訊
-    img.addEventListener('error', (ev) => {
-      console.error('Image failed to load. Checked src:', img.getAttribute('src'));
-      msg.innerHTML = '<span class="error">圖片載入失敗：請檢查檔名/路徑或是否放在同一資料夾（請參考 console）。</span>';
-    });
+    <div class="controls">
+      <label for="tone">語氣</label>
+      <select id="tone">
+        <option value="gentle">溫和（輕度大叔風）</option>
+        <option value="typical" selected>典型（常見大叔風）</option>
+        <option value="extreme">極端（誇張大叔風）</option>
+      </select>
 
-    // 成功載入時顯示成功訊息（方便確認）
-    img.addEventListener('load', () => {
-      console.log('Image loaded successfully:', img.getAttribute('src'));
-      msg.innerText = '圖片已載入，點擊圖片會進行倍增（請注意可能造成大量 DOM）。';
-    });
+      <button id="generateBtn">生成</button>
+      <button id="copyBtn" disabled>複製結果</button>
+    </div>
 
-    // 簡單提示：若你在 local 檔案系統遇到問題，可啟動簡單伺服器：
-    // Python 3: 在該資料夾執行 `python -m http.server 8000` 然後開啟 http://localhost:8000
-  </script>
+    <section class="result-area">
+      <h2>結果</h2>
+      <pre id="result" aria-live="polite"></pre>
+    </section>
+
+    <section class="history-area">
+      <h2>歷史（最近 10 筆）</h2>
+      <ul id="history"></ul>
+    </section>
+
+    <footer class="footer">
+      <small>提示：若要更真實自然，可將此作為模板並用大型語言模型做微調；請避免用於騷擾或侵犯隱私。</small>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
 </body>
 </html>
