@@ -5,59 +5,73 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>一句話→大叔構文 生成器</title>
   <style>
-    /* 這裡幫你寫好了簡單好看的 CSS */
-    body { font-family: sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; padding: 20px; }
-    .container { background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 500px; width: 100%; }
-    h1 { color: #333; font-size: 1.5rem; text-align: center; }
-    textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; margin-bottom: 1rem; }
-    .controls { display: flex; gap: 10px; align-items: center; margin-bottom: 1rem; }
-    select { padding: 8px; border-radius: 5px; }
-    button { padding: 8px 15px; cursor: pointer; border: none; border-radius: 5px; background-color: #007bff; color: white; transition: 0.3s; }
-    button:hover { background-color: #0056b3; }
-    button:disabled { background-color: #ccc; cursor: not-allowed; }
-    .result-area, .history-area { margin-top: 1.5rem; border-top: 1px solid #eee; padding-top: 1rem; }
-    #result { background: #fff9e6; padding: 15px; border-radius: 8px; min-height: 50px; white-space: pre-wrap; word-break: break-all; border-left: 5px solid #ffc107; }
-    ul { list-style: none; padding: 0; font-size: 0.9rem; color: #666; }
-    li { padding: 5px 0; border-bottom: 1px dashed #eee; }
-    .footer { margin-top: 2rem; font-size: 0.7rem; color: #999; text-align: center; }
+    body { font-family: "Microsoft JhengHei", sans-serif; background-color: #e9eaed; display: flex; justify-content: center; padding: 20px; }
+    .container { background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 500px; width: 100%; }
+    h1 { color: #4b4b4b; font-size: 1.5rem; text-align: center; margin-bottom: 0.5rem; }
+    p.description { text-align: center; color: #777; font-size: 0.9rem; margin-bottom: 1.5rem; }
+    
+    label { font-weight: bold; display: block; margin-bottom: 5px; color: #555; }
+    textarea { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 12px; box-sizing: border-box; margin-bottom: 1rem; resize: none; font-size: 1rem; }
+    textarea:focus { border-color: #007bff; outline: none; }
+
+    .controls { display: flex; gap: 10px; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    select { padding: 8px; border-radius: 8px; border: 1px solid #ccc; flex-grow: 1; }
+    button { padding: 10px 20px; cursor: pointer; border: none; border-radius: 8px; font-weight: bold; transition: 0.2s; }
+    #generateBtn { background-color: #4CAF50; color: white; }
+    #generateBtn:hover { background-color: #45a049; }
+    #copyBtn { background-color: #008CBA; color: white; }
+    #copyBtn:disabled { background-color: #ccc; }
+
+    /* 對話區域樣式 */
+    .result-area { background: #f9f9f9; padding: 20px; border-radius: 15px; display: flex; gap: 15px; align-items: flex-start; margin-top: 1rem; border: 1px solid #eee; }
+    .avatar { width: 60px; height: 60px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-shrink: 0; background-color: #eee; }
+    
+    .bubble { background: #fff; padding: 12px 18px; border-radius: 0 15px 15px 15px; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #e0e0e0; flex-grow: 1; }
+    #result { margin: 0; white-space: pre-wrap; word-break: break-all; font-size: 1.05rem; line-height: 1.5; color: #333; }
+
+    .history-area { margin-top: 2rem; }
+    #history { list-style: none; padding: 0; }
+    #history li { background: #f1f1f1; margin-bottom: 5px; padding: 8px 12px; border-radius: 5px; font-size: 0.85rem; color: #666; }
+
+    .footer { margin-top: 2rem; font-size: 0.75rem; color: #bbb; text-align: center; }
   </style>
 </head>
 <body>
   <main class="container">
-    <h1>一句話 → 大叔構文 生成器</h1>
-    <p class="description">輸入一句話，選擇語氣，按「生成」試試看！</p>
+    <h1>👴 大叔構文生成器</h1>
+    <p class="description">讓叔叔來幫你的話「加點料」捏 (^_−)☆</p>
 
-    <label for="inputText">輸入一句話</label>
-    <textarea id="inputText" rows="3" placeholder="例如：明天要吃什麼？"></textarea>
+    <label>輸入你想說的話</label>
+    <textarea id="inputText" rows="3" placeholder="例如：今天要加班嗎？"></textarea>
 
     <div class="controls">
-      <label for="tone">語氣</label>
       <select id="tone">
-        <option value="gentle">溫和（輕度大叔風）</option>
-        <option value="typical" selected>典型（常見大叔風）</option>
-        <option value="extreme">極端（誇張大叔風）</option>
+        <option value="gentle">溫和（剛認識的叔叔）</option>
+        <option value="typical" selected>典型（熱情的叔叔）</option>
+        <option value="extreme">極端（稍微有點怕怕的叔叔）</option>
       </select>
-      <button id="generateBtn">生成</button>
+      <button id="generateBtn">生成文字</button>
       <button id="copyBtn" disabled>複製</button>
     </div>
 
     <section class="result-area">
-      <h2>結果</h2>
-      <pre id="result"></pre>
+      <img class="avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&eyebrows=flatNatural&mouth=smile&top=shortHair&hairColor=4a312c" alt="大叔頭像">
+      <div class="bubble">
+        <pre id="result">還沒開始生成唷...💦</pre>
+      </div>
     </section>
 
     <section class="history-area">
-      <h2>最近紀錄</h2>
+      <label>最近的搭訕紀錄：</label>
       <ul id="history"></ul>
     </section>
 
     <footer class="footer">
-      <small>提示：請避免用於騷擾或侵犯隱私。</small>
+      本工具僅供娛樂，使用時請注意禮貌唷！😘
     </footer>
   </main>
 
   <script>
-    // 這裡就是控制網頁運作的 JavaScript
     document.addEventListener('DOMContentLoaded', () => {
       const inputText = document.getElementById('inputText');
       const toneSelect = document.getElementById('tone');
@@ -66,20 +80,28 @@
       const resultArea = document.getElementById('result');
       const historyList = document.getElementById('history');
 
-      const emojis = ['😘', '😜', '💦', '❗', '⁉️', '☀️', '🏃', '😋', '💬', '✨', '🙏', '💔'];
-      const particles = ['捏', '唷', '呀', '呢', '喔', '（笑）', ' (^_−)☆', '（汗）', '😅', '@@'];
-      const greetings = ['XX醬，晚安呀', '喔呀？', '叔叔我啊...', '今天也是充滿活力呢', '小XX，在幹嘛呢？'];
+      const emojis = ['😘', '😜', '💦', '❗', '⁉️', '☀️', '🏃', '😋', '💬', '✨', '🙏', '💔', '😅', '👉👈'];
+      const particles = ['捏', '唷', '呀', '呢', '喔', '（笑）', ' (^_−)☆', '（汗）', '@@', '（激動）'];
+      const greetings = [
+        'XX醬，早安呀', 
+        '喔呀？是在忙嗎？', 
+        '叔叔我啊，剛好想到你...', 
+        '今天也是充滿活力的一天捏', 
+        '小XX，有沒有乖乖吃飯呀？',
+        '好久不見捏，變漂亮了喔'
+      ];
 
       generateBtn.addEventListener('click', () => {
         const text = inputText.value.trim();
         if (!text) {
-          alert('要輸入文字叔叔才能幫你轉呀！(^_−)☆');
+          alert('不輸入文字的話，叔叔會很寂寞喔...💔');
           return;
         }
 
         const tone = toneSelect.value;
-        let repeatCount = tone === 'gentle' ? 2 : (tone === 'typical' ? 5 : 10);
+        let repeatCount = tone === 'gentle' ? 2 : (tone === 'typical' ? 5 : 12);
         
+        // 隨機組合邏輯
         let result = `${greetings[Math.floor(Math.random() * greetings.length)]}\n${text}`;
         
         for (let i = 0; i < repeatCount; i++) {
@@ -90,16 +112,16 @@
         resultArea.textContent = result;
         copyBtn.disabled = false;
 
-        // 加到歷史紀錄
+        // 紀錄
         const li = document.createElement('li');
-        li.textContent = result.substring(0, 30) + '...';
-        if (historyList.children.length >= 10) historyList.removeChild(historyList.lastChild);
+        li.textContent = result.substring(0, 25) + '...';
+        if (historyList.children.length >= 5) historyList.removeChild(historyList.lastChild);
         historyList.prepend(li);
       });
 
       copyBtn.addEventListener('click', () => {
         navigator.clipboard.writeText(resultArea.textContent).then(() => {
-          alert('複製成功了唷！😘');
+          alert('複製成功了唷！叔叔很開心！😘');
         });
       });
     });
